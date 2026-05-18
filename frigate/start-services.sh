@@ -6,7 +6,14 @@ export DOCKER_HOST='unix:///Users/adi/.colima/default/docker.sock'
 LOG=/tmp/start-services.log
 echo "$(date): starting services" >> $LOG
 
-# Start FrigateDetector (CoreML / M4 Neural Engine) — optional, enables faster detection
+# Start AdGuard Home on port 53 BEFORE Colima (so it wins the port 53 race)
+if ! pgrep -f 'AdGuardHome -s run' > /dev/null; then
+  SUDO_ASKPASS=~/.adg_helper.sh sudo -A nohup /Applications/AdGuardHome/AdGuardHome -s run >> $LOG 2>&1 &
+  sleep 5
+  echo "$(date): AdGuard started" >> $LOG
+fi
+
+# Start FrigateDetector (CoreML / M4 Neural Engine) -- optional
 DETECTOR_DIR=~/Applications/FrigateDetector.app/Contents/Resources/app
 if [ -d "$DETECTOR_DIR" ] && ! pgrep -f zmq_onnx_client > /dev/null; then
   nohup "$DETECTOR_DIR/venv/bin/python3" "$DETECTOR_DIR/detector/zmq_onnx_client.py" --model AUTO >> $LOG 2>&1 &
