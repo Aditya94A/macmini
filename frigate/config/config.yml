@@ -1,0 +1,72 @@
+mqtt:
+  enabled: false
+
+detectors:
+  cpu1:
+    type: cpu
+    num_threads: 3
+
+ffmpeg:
+  hwaccel_args: []
+
+# go2rtc: single connection per camera, shared for record + live view
+go2rtc:
+  streams:
+    front:
+      - rtsp://AdiCam99:123aditya123@192.168.0.123/stream2
+    back:
+      - rtsp://AdiCam99:123aditya123@192.168.0.39/stream2
+
+record:
+  enabled: true
+  retain:
+    days: 7
+    mode: motion
+  events:
+    pre_capture: 5
+    post_capture: 10
+    retain:
+      default: 14
+      mode: motion
+
+snapshots:
+  enabled: true
+  retain:
+    default: 14
+
+objects:
+  track:
+    - person
+    - car
+    - dog
+
+cameras:
+  front:
+    ffmpeg:
+      inputs:
+        - path: rtsp://AdiCam99:123aditya123@192.168.0.123/stream2
+          roles:
+            - detect
+        - path: rtsp://127.0.0.1:8554/front
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+    detect:
+      width: 640
+      height: 360
+      fps: 5
+
+  back:
+    ffmpeg:
+      inputs:
+        - path: rtsp://AdiCam99:123aditya123@192.168.0.39/stream2
+          roles:
+            - detect
+        - path: rtsp://127.0.0.1:8554/back
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+    detect:
+      width: 640
+      height: 360
+      fps: 5

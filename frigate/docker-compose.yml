@@ -1,0 +1,20 @@
+services:
+  frigate:
+    container_name: frigate
+    image: ghcr.io/blakeblackshear/frigate:stable
+    restart: unless-stopped
+    privileged: true
+    shm_size: "256mb"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./config:/config
+      - /Users/adi/frigate-data/recordings:/media/frigate/recordings
+      - /Users/adi/frigate-data/clips:/media/frigate/clips
+      - /Users/adi/frigate-data/cache:/tmp/cache
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "5000:5000"
+      - "8554:8554"
+      - "8555:8555/tcp"
+      - "8555:8555/udp"

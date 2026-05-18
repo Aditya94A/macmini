@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ssh *)",
+      "Bash(crontab *)",
+      "Bash(sudo *)",
+      "Bash(rsync *)"
+    ]
+  }
+}
